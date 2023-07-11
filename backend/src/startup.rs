@@ -70,21 +70,22 @@ async fn run(
         .expect("Cannot create deadpool redis.");
     let redis_pool_data = actix_web::web::Data::new(redis_pool);
 
-    // For session
-    let secret_key = actix_web::cookie::Key::from(settings.secret.hmac_secret.as_bytes());
-    let redis_store = actix_session::storage::RedisSessionStore::new(redis_url.clone())
-        .await
-        .expect("Cannot unwrap redis session.");
+    
 
     let server = actix_web::HttpServer::new(move || {
         actix_web::App::new()
             .wrap(
-                actix_session::SessionMiddleware::builder(redis_store.clone(), secret_key.clone())
-                    .cookie_http_only(true)
-                    .cookie_same_site(actix_web::cookie::SameSite::Lax)
-                    .cookie_secure(true)
-                    .cookie_name("sessionid".to_string())
-                    .build(),
+                actix_cors::Cors::default()
+                .allowed_origin(&settings.frontend_url)
+                .allowed_methods(vec!["GET", "POST", "PATCH", "DELETE"])
+                .allowed_headers(vec![
+                    actix_web::http::header::AUTHORIZATION,
+                    actix_web::http::header::ACCEPT,
+                ])
+                .allowed_header(actix_web::http::header::CONTENT_TYPE)
+                .expose_headers(&[actix_web::http::header::CONTENT_DISPOSITION])
+                .supports_credentials()
+                .max_age(3600),
             )
             .service(crate::routes::health_check)
             // Authentication routes
