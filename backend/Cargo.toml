@@ -12,6 +12,7 @@ path = "src/main.rs"
 name = "backend"
 
 [dependencies]
+actix-cors = "0.6.4"
 actix-multipart = "0.6"
 actix-session = { version = "0.7", features = [
     "redis-rs-session",
@@ -20,10 +21,10 @@ actix-session = { version = "0.7", features = [
 actix-web = "4"
 argon2 = "0.5"
 aws-config = "0.55"
-aws-sdk-s3 = "0.26"
+aws-sdk-s3 = "0.28.0"
 chrono = { version = "0.4", features = ["serde"] }
 config = { version = "0.13", features = ["yaml"] }
-deadpool-redis = "0.11"
+deadpool-redis = "0.12.0"
 dotenv = "0.15"
 hex = "0.4"
 lettre = { version = "0.10", features = ["builder", "tokio1-native-tls"] }
